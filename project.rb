@@ -67,7 +67,7 @@ class Dependency
     @name = name
     @organization = organization
     @revision = revision
-    @revision = '0.0+' if source_dependency? and revision =~ /gid.release/
+    @revision = '0.0+' if source_dependency? 
     @configurations = configurations.split(';')
   end
   
