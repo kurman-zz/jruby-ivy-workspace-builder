@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+  <% project_settings[:folders].each do |folder_info|%>
+    <% if folder_info[:source] %>
+      <classpathentry kind="src" path="<%= folder_info[:name] %>"/>
+  	<% end %>
+  <% end %>
+  <% project_dependencies.each do |dependency| %>
+    <classpathentry kind="src" exported="true" combineaccessrules="false" path="/<%= dependency.module_name %>"/>
+  <% end %>
+  <% project_settings[:libs].each do |library|%>
+    <classpathentry kind="lib" exported="true" path="<%= library %>"/>
+  <% end %>	
+  <% if project_settings[:has_tests] %>
+    <classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+  <% end %>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

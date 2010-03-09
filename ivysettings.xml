@@ -1,0 +1,52 @@
+<ivysettings>
+		<properties file="ivysettings.properties" />
+		<!-- <property name="ivy.dep.file" value="dependency.xml"/> -->
+		<property name="ivy.cache.path" value="${IVY_REPO_PATH}/repo-cache"/>
+		<caches lockstrategy="artifact-lock" defaultCacheDir="${ivy.cache.path}" resolutionCacheDir="${target.dir}/repo-cache">
+			<cache name="default" basedir="${ivy.cache.path}" defaultTTL="1m"/>
+		</caches>
+		
+        <settings defaultResolver="local-and-remote" circularDependencyStrategy="error" validate="false"/>
+        <resolvers>
+			<url name="public_repository_HTTP" checkmodified="true" validate="false">
+				<ivy pattern="http://10.8.168.57/build_artifacts/[organisation]/[module]/ivy-[revision].xml"/>
+				<artifact pattern="http://10.8.168.57/build_artifacts/[organisation]/[module]/[revision]/[type]/[artifact]-[revision].[ext]"/>
+
+				<!-- TODO - reorg the repo to include [type] then remove this artifact pattern -->
+				<artifact pattern="http://10.8.168.57/build_artifacts/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
+		
+				<!-- This pattern is a catch-all for artifacts that haven't been identified. Use it as a last resort please -->
+				<artifact pattern="http://10.8.168.57/build_artifacts/[organisation]/[module]/[revision]/[organisation]-[artifact]-[revision].[ext]"/>
+			</url>
+			<url name="remote-egg-model" checkmodified="false" validate="false">
+				<artifact pattern="http://10.8.168.57/build_artifacts/[organisation]/[module]/[revision]/[artifact]-[revision].tar.gz"/>
+			</url>
+			
+			<!-- Local repository (Dev machine or Build Box) that will contain public & private artifacts.  -->
+			<filesystem name="local_private_repository" checkmodified="true" validate="false">
+				<ivy pattern="${IVY_REPO_PATH}/local-repo/[organisation]/[module]/ivy-[revision].xml"/>
+				<artifact pattern="${IVY_REPO_PATH}/local-repo/[organisation]/[module]/[revision]/[type]/[artifact]-[revision].[ext]"/>
+			</filesystem>
+			<!-- IBiblio public repository -->
+			<ibiblio name="IBiblio_internet_repository" m2compatible="true" validate="false"/>
+
+
+			<!-- Our default repository, it checks A) GID public, B) Local Private -->
+			<chain name="local-and-remote" returnFirst="false">
+				<!-- If the chosen artifact exists in both repositories the last one found wins.  Because of this we need
+				     the local repository LAST.  It's necessary for rebuilds of existing artifacts where the source hasn't changed 
+				     but metadata (i.e. - published ivy.xml) will.
+				-->
+				<resolver ref="public_repository_HTTP"/>
+				<resolver ref="local_private_repository"/>
+			</chain>
+			<chain name="public-and-internet" returnFirst="true">
+				<resolver ref="public_repository_HTTP"/>
+				<resolver ref="IBiblio_internet_repository"/>
+			</chain>
+			
+    </resolvers>
+		<modules>
+			<module organisation="*" name="*" resolver="public-and-internet"/>
+		</modules>
+</ivysettings>

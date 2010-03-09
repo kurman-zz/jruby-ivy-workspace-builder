@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name><%= project_settings[:project_name] %></name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+	<linkedResources>
+    <% project_settings[:files].each do |file_info|%>
+      <link>
+  			<name><%= file_info[:name] %></name>
+  			<type>1</type>
+  			<location><%= file_info[:path] %></location>
+  		</link>
+    <% end %>
+    <% project_settings[:folders].each do |folder_info|%>
+      <link>
+  			<name><%= folder_info[:name] %></name>
+  			<type>2</type>
+  			<location><%= folder_info[:path] %></location>
+  		</link>
+    <% end %>
+	</linkedResources>
+</projectDescription>
